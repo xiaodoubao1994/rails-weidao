@@ -18,9 +18,11 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: @user
+      # render json: @user, status: :created, location: @user
+      render json: {code: 1, msg: "注册成功"}
     else
-      render json: @user.errors, status: :unprocessable_entity
+      # render json: @user.errors, status: :unprocessable_entity
+      render json: {code: 0, msg: "注册失败"}
     end
   end
 
@@ -38,6 +40,17 @@ class UsersController < ApplicationController
     @user.destroy
   end
 
+  def get_user 
+    @count = User.get_by(params[:type], params[:value])
+    if @count.length > 0
+      render json: {code: 1, msg: "已存在"}
+    else
+      render json: {code: 0, msg: "可以注册"}
+    end 
+  end
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -46,6 +59,6 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:username, :userpwd)
+      params.require(:user).permit(:username, :userpwd, :email)
     end
 end
